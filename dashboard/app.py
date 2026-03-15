@@ -7,6 +7,10 @@ import pandas as pd
 import joblib
 import plotly.express as px
 import os
+import sys
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from scripts.language_reply import detect_language, auto_reply
 from scripts.reputation import reputation_score
