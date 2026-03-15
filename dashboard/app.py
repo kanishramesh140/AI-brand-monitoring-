@@ -6,11 +6,13 @@ import streamlit as st
 import pandas as pd
 import joblib
 import plotly.express as px
+import plotly.graph_objects as go
 import os
 import sys
-
+import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from scripts.language_reply import detect_language, auto_reply
 from scripts.reputation import reputation_score
 from scripts.prediction import predict_reputation
@@ -49,10 +51,10 @@ height:350px !important;
 # ==========================================================
 DATA_DIR = "data"
 MODEL_DIR = "models"
+
 DATA_PATH = os.path.join(DATA_DIR, "review_dataset.csv")
 MODEL_PATH = os.path.join(MODEL_DIR, "models.pkl")
 
-# Create folders if they don't exist
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(MODEL_DIR, exist_ok=True)
 
@@ -61,7 +63,7 @@ os.makedirs(MODEL_DIR, exist_ok=True)
 # ==========================================================
 if not os.path.exists(DATA_PATH) or not os.path.exists(MODEL_PATH):
     st.warning("Dataset or models missing. Creating them...")
-    import scripts.train_model  # this will auto-create dataset & models
+    import scripts.train_model
 
 # ==========================================================
 # LOAD DATA AND MODELS
@@ -112,7 +114,8 @@ fig = px.pie(
     names="sentiment",
     title="Sentiment Distribution"
 )
-st.plotly_chart(fig, use_container_width=True)
+
+st.plotly_chart(fig, width="stretch")
 
 # ==========================================================
 # BRAND WAR ANALYTICS
@@ -131,7 +134,8 @@ fig2 = px.bar(
     barmode="group",
     title="Brand Competition Sentiment"
 )
-st.plotly_chart(fig2, use_container_width=True)
+
+st.plotly_chart(fig2, width="stretch")
 
 # ==========================================================
 # PLATFORM COMPLAINT MAP
@@ -146,7 +150,8 @@ fig3 = px.histogram(
     color="brand",
     title="Complaints by Platform"
 )
-st.plotly_chart(fig3, use_container_width=True)
+
+st.plotly_chart(fig3, width="stretch")
 
 # ==========================================================
 # REPUTATION SCORE
@@ -161,9 +166,11 @@ selected_brand = st.selectbox(
 )
 
 brand_data = filtered[filtered["brand"] == selected_brand]
+
 texts = brand_data["text"]
 vectors = vectorizer.transform(texts)
 sentiments = list(sentiment_model.predict(vectors))
+
 score = reputation_score(sentiments)
 
 st.metric("Reputation Score", f"{score}%")
@@ -181,7 +188,8 @@ fig4 = px.bar(
     y="future_score",
     title="Future Reputation Forecast"
 )
-st.plotly_chart(fig4, use_container_width=True)
+
+st.plotly_chart(fig4, width="stretch")
 
 # ==========================================================
 # 🌌 BRAND REPUTATION GALAXY
@@ -195,9 +203,55 @@ st.write(
 )
 
 galaxy_fig = generate_galaxy(filtered)
-st.dataframe(df, width="stretch")
 
-st.plotly_chart(fig, width="stretch")
+st.dataframe(filtered, width="stretch")
+
+st.plotly_chart(galaxy_fig, width="stretch")
+
+# ==========================================================
+# ⭐ 3D GALAXY VISUALIZATION UPGRADE
+# ==========================================================
+st.subheader("🪐 3D Brand Galaxy View")
+
+brands = filtered["brand"].unique()
+
+x = np.random.rand(len(brands))
+y = np.random.rand(len(brands))
+z = np.random.rand(len(brands))
+
+sizes = []
+
+for b in brands:
+    brand_data = filtered[filtered["brand"] == b]
+    vec = vectorizer.transform(brand_data["text"])
+    sentiments = sentiment_model.predict(vec)
+    score = reputation_score(sentiments)
+    sizes.append(score)
+
+fig3d = go.Figure(data=[go.Scatter3d(
+    x=x,
+    y=y,
+    z=z,
+    mode='markers+text',
+    text=brands,
+    marker=dict(
+        size=np.array(sizes)/2,
+        color=sizes,
+        colorscale='Viridis',
+        opacity=0.8
+    )
+)])
+
+fig3d.update_layout(
+    title="3D Brand Reputation Galaxy",
+    scene=dict(
+        xaxis_title='Galaxy X',
+        yaxis_title='Galaxy Y',
+        zaxis_title='Galaxy Z'
+    )
+)
+
+st.plotly_chart(fig3d, width="stretch")
 
 # ==========================================================
 # COMPLAINT TABLE
@@ -206,7 +260,7 @@ st.subheader("Recent Complaints")
 
 st.dataframe(
     complaints[["platform", "brand", "text", "category"]],
-    use_container_width=True
+    width="stretch"
 )
 
 # ==========================================================
@@ -217,12 +271,15 @@ st.subheader("Analyze New Review")
 text = st.text_area("Enter customer review")
 
 if st.button("Analyze"):
+
     lang = detect_language(text)
+
     vec = vectorizer.transform([text])
+
     category = category_model.predict(vec)[0]
+
     sentiment = sentiment_model.predict(vec)[0]
-    
-    # Only predict fake if model exists
+
     if fake_model is not None:
         fake = fake_model.predict(vec)[0]
     else:
