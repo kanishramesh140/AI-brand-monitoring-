@@ -7,9 +7,9 @@ import pandas as pd
 import joblib
 import plotly.express as px
 import plotly.graph_objects as go
+import numpy as np
 import os
 import sys
-import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -19,23 +19,29 @@ from scripts.prediction import predict_reputation
 from scripts.galaxy_visualization import generate_galaxy
 from dashboard.theme import apply_theme
 
+
 # ==========================================================
 # PAGE CONFIG
 # ==========================================================
+
 st.set_page_config(
     page_title="AI Brand Intelligence",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+
 # ==========================================================
 # APPLY DASHBOARD THEME
 # ==========================================================
+
 apply_theme()
+
 
 # ==========================================================
 # MOBILE RESPONSIVE CSS
 # ==========================================================
+
 st.markdown("""
 <style>
 @media (max-width:768px){
@@ -46,9 +52,11 @@ height:350px !important;
 </style>
 """, unsafe_allow_html=True)
 
+
 # ==========================================================
 # STREAMLIT CLOUD FRIENDLY PATHS
 # ==========================================================
+
 DATA_DIR = "data"
 MODEL_DIR = "models"
 
@@ -58,16 +66,20 @@ MODEL_PATH = os.path.join(MODEL_DIR, "models.pkl")
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(MODEL_DIR, exist_ok=True)
 
+
 # ==========================================================
 # AUTO CREATE DATASET & MODELS IF MISSING
 # ==========================================================
+
 if not os.path.exists(DATA_PATH) or not os.path.exists(MODEL_PATH):
     st.warning("Dataset or models missing. Creating them...")
     import scripts.train_model
 
+
 # ==========================================================
 # LOAD DATA AND MODELS
 # ==========================================================
+
 data = pd.read_csv(DATA_PATH)
 models = joblib.load(MODEL_PATH)
 
@@ -76,15 +88,19 @@ category_model = models["category_model"]
 sentiment_model = models["sentiment_model"]
 fake_model = models["fake_model"]
 
+
 # ==========================================================
 # HEADER
 # ==========================================================
+
 st.title("🚀 AI Brand Intelligence Command Center")
 st.write("AI powered brand monitoring platform")
+
 
 # ==========================================================
 # SIDEBAR FILTERS
 # ==========================================================
+
 st.sidebar.header("Filters")
 
 platform_filter = st.sidebar.multiselect(
@@ -104,9 +120,11 @@ filtered = data[
     (data["brand"].isin(brand_filter))
 ]
 
+
 # ==========================================================
 # SENTIMENT DISTRIBUTION
 # ==========================================================
+
 st.subheader("Customer Sentiment Distribution")
 
 fig = px.pie(
@@ -115,11 +133,13 @@ fig = px.pie(
     title="Sentiment Distribution"
 )
 
-st.plotly_chart(fig, width="stretch")
+st.plotly_chart(fig, use_container_width=True)
+
 
 # ==========================================================
 # BRAND WAR ANALYTICS
 # ==========================================================
+
 st.subheader("Brand War Analytics")
 
 brand_sentiment = filtered.groupby(
@@ -135,11 +155,13 @@ fig2 = px.bar(
     title="Brand Competition Sentiment"
 )
 
-st.plotly_chart(fig2, width="stretch")
+st.plotly_chart(fig2, use_container_width=True)
+
 
 # ==========================================================
 # PLATFORM COMPLAINT MAP
 # ==========================================================
+
 st.subheader("Platform Complaint Map")
 
 complaints = filtered[filtered["sentiment"] == "Negative"]
@@ -151,11 +173,13 @@ fig3 = px.histogram(
     title="Complaints by Platform"
 )
 
-st.plotly_chart(fig3, width="stretch")
+st.plotly_chart(fig3, use_container_width=True)
+
 
 # ==========================================================
 # REPUTATION SCORE
 # ==========================================================
+
 st.subheader("Brand Reputation Score")
 
 brands = filtered["brand"].unique()
@@ -168,16 +192,20 @@ selected_brand = st.selectbox(
 brand_data = filtered[filtered["brand"] == selected_brand]
 
 texts = brand_data["text"]
+
 vectors = vectorizer.transform(texts)
+
 sentiments = list(sentiment_model.predict(vectors))
 
 score = reputation_score(sentiments)
 
 st.metric("Reputation Score", f"{score}%")
 
+
 # ==========================================================
 # FUTURE REPUTATION PREDICTION
 # ==========================================================
+
 st.subheader("Reputation Prediction")
 
 forecast = predict_reputation(filtered)
@@ -189,11 +217,13 @@ fig4 = px.bar(
     title="Future Reputation Forecast"
 )
 
-st.plotly_chart(fig4, width="stretch")
+st.plotly_chart(fig4, use_container_width=True)
+
 
 # ==========================================================
 # 🌌 BRAND REPUTATION GALAXY
 # ==========================================================
+
 st.subheader("🌌 AI Brand Reputation Galaxy")
 
 st.write(
@@ -204,13 +234,15 @@ st.write(
 
 galaxy_fig = generate_galaxy(filtered)
 
-st.dataframe(filtered, width="stretch")
+st.dataframe(filtered)
 
-st.plotly_chart(galaxy_fig, width="stretch")
+st.plotly_chart(galaxy_fig, use_container_width=True)
+
 
 # ==========================================================
-# ⭐ 3D GALAXY VISUALIZATION UPGRADE
+# ⭐ SMALL UPGRADE: 3D GALAXY VISUALIZATION
 # ==========================================================
+
 st.subheader("🪐 3D Brand Galaxy View")
 
 brands = filtered["brand"].unique()
@@ -242,30 +274,49 @@ fig3d = go.Figure(data=[go.Scatter3d(
     )
 )])
 
-fig3d.update_layout(
-    title="3D Brand Reputation Galaxy",
-    scene=dict(
-        xaxis_title='Galaxy X',
-        yaxis_title='Galaxy Y',
-        zaxis_title='Galaxy Z'
-    )
+fig3d.update_layout(title="3D Brand Reputation Galaxy")
+
+st.plotly_chart(fig3d, use_container_width=True)
+
+
+# ==========================================================
+# POWERFUL IMPROVEMENT: REAL-TIME BRAND MONITORING
+# ==========================================================
+
+st.subheader("📡 Live Brand Sentiment Monitor")
+
+placeholder = st.empty()
+
+live_data = filtered.sample(min(20, len(filtered)))
+
+live_counts = live_data["sentiment"].value_counts()
+
+live_fig = px.bar(
+    x=live_counts.index,
+    y=live_counts.values,
+    labels={"x": "Sentiment", "y": "Mentions"},
+    title="Live Sentiment Snapshot"
 )
 
-st.plotly_chart(fig3d, width="stretch")
+placeholder.plotly_chart(live_fig, use_container_width=True)
+
 
 # ==========================================================
 # COMPLAINT TABLE
 # ==========================================================
+
 st.subheader("Recent Complaints")
 
 st.dataframe(
     complaints[["platform", "brand", "text", "category"]],
-    width="stretch"
+    use_container_width=True
 )
+
 
 # ==========================================================
 # AI REVIEW ANALYZER
 # ==========================================================
+
 st.subheader("Analyze New Review")
 
 text = st.text_area("Enter customer review")
