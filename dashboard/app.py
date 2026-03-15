@@ -298,6 +298,48 @@ if st.button("Analyze"):
         fake = fake_model.predict(vec)[0]
     else:
         fake = 0
+        if (
+"!!!" in text or
+"100%" in text or
+"must buy" in text.lower() or
+"everyone must buy" in text.lower() or
+"best product ever" in text.lower() or
+"best phone ever" in text.lower() or
+"100% perfect" in text.lower() or
+"100% recommended" in text.lower() or
+"guaranteed results" in text.lower() or
+"life changing" in text.lower() or
+"amazing product" in text.lower() or
+"perfect product" in text.lower() or
+"top quality" in text.lower() or
+"highest quality" in text.lower() or
+"super product" in text.lower() or
+"awesome product" in text.lower() or
+"incredible product" in text.lower() or
+"fantastic product" in text.lower() or
+"buy this now" in text.lower() or
+"limited offer" in text.lower() or
+"don't miss this" in text.lower() or
+"highly recommend" in text.lower() or
+"highly recommended" in text.lower() or
+"worth every penny" in text.lower() or
+"totally worth it" in text.lower() or
+"best in the market" in text.lower() or
+"number one product" in text.lower() or
+"unbelievable" in text.lower() or
+"outstanding" in text.lower() or
+"no.1 brand" in text.lower() or
+"best ever" in text.lower() or
+"love this product" in text.lower() or
+"absolutely perfect" in text.lower() or
+"perfect in every way" in text.lower()
+):
+            
+    fake = 1
+elif fake_model is not None:
+    fake = fake_model.predict(vec)[0]
+else:
+    fake = 0
 
     reply = auto_reply(lang, sentiment)
 
