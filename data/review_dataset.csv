@@ -1,84 +1,21 @@
-import pandas as pd
-
-# ==========================================
-# Reviews Dataset
-# ==========================================
-
-data = [
-
-["Twitter","Samsung","Samsung battery draining fast","Product","Negative",0],
-["Twitter","Apple","I love the new iPhone camera","Feedback","Positive",0],
-["Twitter","Jio","Jio internet very slow today","Service","Negative",0],
-["Twitter","Airtel","Airtel network problem in my area","Service","Negative",0],
-
-["Amazon","Samsung","This phone is amazing great display","Feedback","Positive",0],
-["Amazon","OnePlus","Battery problem after update","Product","Negative",0],
-["Amazon","Apple","Excellent product worth buying","Feedback","Positive",0],
-["Amazon","Realme","Phone overheating while charging","Product","Negative",0],
-
-["Flipkart","Realme","Phone heating issue while gaming","Product","Negative",0],
-["Flipkart","Vivo","Camera quality is very good","Feedback","Positive",0],
-["Flipkart","Samsung","Delivery was fast and packaging good","Delivery","Positive",0],
-["Flipkart","Apple","Product price too high for features","Product","Negative",0],
-
-["PlayStore","Jio","Jio app crashes frequently","Service","Negative",0],
-["PlayStore","Google","Great update very smooth","Feedback","Positive",0],
-["PlayStore","Airtel","App login issue after update","Service","Negative",0],
-["PlayStore","Samsung","Samsung health app works perfectly","Feedback","Positive",0],
-
-["YouTube","Samsung","This phone review is amazing","Feedback","Positive",0],
-["YouTube","Apple","Overpriced phone not worth it","Product","Negative",0],
-["YouTube","Realme","Great performance for gaming","Feedback","Positive",0],
-["YouTube","Vivo","Camera stabilization is impressive","Feedback","Positive",0],
-
-["Twitter","Amazon","Amazon delivery was late","Delivery","Negative",0],
-["Twitter","Flipkart","Great delivery service fast shipping","Feedback","Positive",0],
-["Twitter","Realme","Realme phone battery backup is excellent","Feedback","Positive",0],
-["Twitter","OnePlus","OnePlus update caused heating issue","Product","Negative",0],
-
-["Amazon","Samsung","Samsung screen quality is outstanding","Feedback","Positive",0],
-["Amazon","Apple","Battery life could be better","Product","Negative",0],
-["Amazon","Vivo","Beautiful design and camera clarity","Feedback","Positive",0],
-["Amazon","Jio","Network speed fluctuates often","Service","Negative",0],
-
-["Flipkart","OnePlus","OnePlus phone is smooth and fast","Feedback","Positive",0],
-["Flipkart","Samsung","Speaker sound quality is poor","Product","Negative",0],
-["Flipkart","Apple","Build quality is premium","Feedback","Positive",0],
-["Flipkart","Jio","Customer support not responding","Service","Negative",0],
-
-["PlayStore","Google","Maps update improved navigation","Feedback","Positive",0],
-["PlayStore","Samsung","App consumes too much battery","Product","Negative",0],
-["PlayStore","Realme","Gaming performance optimized","Feedback","Positive",0],
-["PlayStore","Vivo","Camera app lagging sometimes","Product","Negative",0],
-
-["YouTube","Apple","Best smartphone camera in market","Feedback","Positive",0],
-["YouTube","Samsung","Battery draining problem reported","Product","Negative",0],
-["YouTube","Jio","Jio network speed test results disappointing","Service","Negative",0],
-["YouTube","Airtel","Airtel internet speed impressive","Feedback","Positive",0]
-
-]
-
-# ==========================================
-# Convert to DataFrame
-# ==========================================
-
-df = pd.DataFrame(
-    data,
-    columns=[
-        "platform",
-        "brand",
-        "text",
-        "category",
-        "sentiment",
-        "fake"
-    ]
-)
-
-# ==========================================
-# Save Dataset
-# ==========================================
-
-df.to_csv("reviews_dataset.csv", index=False)
-
-print("Dataset created successfully")
-print(df.head())
+platform,brand,text,category,sentiment,fake
+Twitter,Samsung,Samsung battery draining fast,Product,Negative,0
+Twitter,Apple,I love the new iPhone camera,Feedback,Positive,0
+Twitter,Jio,Jio internet very slow today,Service,Negative,0
+Twitter,Airtel,Airtel network problem in my area,Service,Negative,1
+Amazon,Samsung,This phone is amazing great display,Feedback,Positive,0
+Amazon,OnePlus,Battery problem after update,Product,Negative,0
+Amazon,Apple,Excellent product worth buying,Feedback,Positive,1
+Amazon,Realme,Phone overheating while charging,Product,Negative,0
+Flipkart,Realme,Phone heating issue while gaming,Product,Negative,0
+Flipkart,Vivo,Camera quality is very good,Feedback,Positive,0
+Flipkart,Samsung,Delivery was fast and packaging good,Delivery,Positive,0
+Flipkart,Apple,Product price too high for features,Product,Negative,1
+PlayStore,Jio,Jio app crashes frequently,Service,Negative,0
+PlayStore,Google,Great update very smooth,Feedback,Positive,0
+PlayStore,Airtel,App login issue after update,Service,Negative,0
+PlayStore,Samsung,Samsung health app works perfectly,Feedback,Positive,0
+YouTube,Samsung,This phone review is amazing,Feedback,Positive,0
+YouTube,Apple,Overpriced phone not worth it,Product,Negative,0
+YouTube,Realme,Great performance for gaming,Feedback,Positive,0
+YouTube,Vivo,Camera stabilization is impressive,Feedback,Positive,1
