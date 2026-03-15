@@ -195,7 +195,9 @@ st.write(
 )
 
 galaxy_fig = generate_galaxy(filtered)
-st.plotly_chart(galaxy_fig, use_container_width=True)
+st.dataframe(df, width="stretch")
+
+st.plotly_chart(fig, width="stretch")
 
 # ==========================================================
 # COMPLAINT TABLE
