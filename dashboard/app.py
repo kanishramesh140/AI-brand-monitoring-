@@ -274,8 +274,6 @@ st.dataframe(
     complaints[["platform", "brand", "text", "category"]],
     use_container_width=True
 )
-
-
 # ==========================================================
 # AI REVIEW ANALYZER
 # ==========================================================
@@ -294,48 +292,51 @@ if st.button("Analyze"):
 
     sentiment = sentiment_model.predict(vec)[0]
 
-   text_lower = text.lower()
+    text_lower = text.lower()
 
-if (
-    "!!!" in text
-    or "100%" in text
-    or "must buy" in text_lower
-    or "everyone must buy" in text_lower
-    or "best product ever" in text_lower
-    or "best phone ever" in text_lower
-    or "100% recommended" in text_lower
-    or "guaranteed results" in text_lower
-    or "life changing" in text_lower
-    or "amazing product" in text_lower
-    or "perfect product" in text_lower
-    or "top quality" in text_lower
-    or "highest quality" in text_lower
-    or "super product" in text_lower
-    or "awesome product" in text_lower
-    or "incredible product" in text_lower
-    or "fantastic product" in text_lower
-    or "buy this now" in text_lower
-    or "limited offer" in text_lower
-    or "don't miss this" in text_lower
-    or "highly recommend" in text_lower
-    or "highly recommended" in text_lower
-    or "worth every penny" in text_lower
-    or "totally worth it" in text_lower
-    or "best in the market" in text_lower
-    or "number one product" in text_lower
-    or "unbelievable" in text_lower
-    or "outstanding" in text_lower
-    or "no.1 brand" in text_lower
-    or "best ever" in text_lower
-    or "love this product" in text_lower
-    or "absolutely perfect" in text_lower
-    or "perfect in every way" in text_lower
-):
-    fake = 1
-elif fake_model is not None:
-    fake = fake_model.predict(vec)[0]
-else:
-    fake = 0
+    # Fake review keyword detection
+    if (
+        "!!!" in text
+        or "100%" in text
+        or "must buy" in text_lower
+        or "everyone must buy" in text_lower
+        or "best product ever" in text_lower
+        or "best phone ever" in text_lower
+        or "100% recommended" in text_lower
+        or "guaranteed results" in text_lower
+        or "life changing" in text_lower
+        or "amazing product" in text_lower
+        or "perfect product" in text_lower
+        or "top quality" in text_lower
+        or "highest quality" in text_lower
+        or "super product" in text_lower
+        or "awesome product" in text_lower
+        or "incredible product" in text_lower
+        or "fantastic product" in text_lower
+        or "buy this now" in text_lower
+        or "limited offer" in text_lower
+        or "don't miss this" in text_lower
+        or "highly recommend" in text_lower
+        or "highly recommended" in text_lower
+        or "worth every penny" in text_lower
+        or "totally worth it" in text_lower
+        or "best in the market" in text_lower
+        or "number one product" in text_lower
+        or "unbelievable" in text_lower
+        or "outstanding" in text_lower
+        or "no.1 brand" in text_lower
+        or "best ever" in text_lower
+        or "love this product" in text_lower
+        or "absolutely perfect" in text_lower
+        or "perfect in every way" in text_lower
+    ):
+        fake = 1
+
+    elif fake_model is not None:
+        fake = fake_model.predict(vec)[0]
+
+    else:
+        fake = 0
 
     reply = auto_reply(lang, sentiment)
 
