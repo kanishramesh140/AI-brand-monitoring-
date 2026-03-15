@@ -11,7 +11,6 @@ import sys
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from scripts.language_reply import detect_language, auto_reply
 from scripts.reputation import reputation_score
 from scripts.prediction import predict_reputation
