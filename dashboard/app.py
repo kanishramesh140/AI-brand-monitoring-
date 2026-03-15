@@ -7,10 +7,10 @@ import pandas as pd
 import joblib
 import plotly.express as px
 import plotly.graph_objects as go
-import numpy as np
 import os
 import sys
 
+# FIXED __file__
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from scripts.language_reply import detect_language, auto_reply
@@ -30,16 +30,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-
 # ==========================================================
-# APPLY DASHBOARD THEME
+# APPLY THEME
 # ==========================================================
 
 apply_theme()
 
 
 # ==========================================================
-# MOBILE RESPONSIVE CSS
+# MOBILE RESPONSIVE
 # ==========================================================
 
 st.markdown("""
@@ -54,7 +53,7 @@ height:350px !important;
 
 
 # ==========================================================
-# STREAMLIT CLOUD FRIENDLY PATHS
+# PATHS
 # ==========================================================
 
 DATA_DIR = "data"
@@ -68,19 +67,22 @@ os.makedirs(MODEL_DIR, exist_ok=True)
 
 
 # ==========================================================
-# AUTO CREATE DATASET & MODELS IF MISSING
+# AUTO CREATE DATA
 # ==========================================================
 
 if not os.path.exists(DATA_PATH) or not os.path.exists(MODEL_PATH):
+
     st.warning("Dataset or models missing. Creating them...")
+
     import scripts.train_model
 
 
 # ==========================================================
-# LOAD DATA AND MODELS
+# LOAD DATA
 # ==========================================================
 
 data = pd.read_csv(DATA_PATH)
+
 models = joblib.load(MODEL_PATH)
 
 vectorizer = models["vectorizer"]
@@ -94,6 +96,7 @@ fake_model = models["fake_model"]
 # ==========================================================
 
 st.title("🚀 AI Brand Intelligence Command Center")
+
 st.write("AI powered brand monitoring platform")
 
 
@@ -184,10 +187,7 @@ st.subheader("Brand Reputation Score")
 
 brands = filtered["brand"].unique()
 
-selected_brand = st.selectbox(
-    "Select Brand",
-    brands
-)
+selected_brand = st.selectbox("Select Brand", brands)
 
 brand_data = filtered[filtered["brand"] == selected_brand]
 
@@ -221,84 +221,47 @@ st.plotly_chart(fig4, use_container_width=True)
 
 
 # ==========================================================
-# 🌌 BRAND REPUTATION GALAXY
+# 🌌 BRAND REPUTATION GALAXY (3D UPGRADE)
 # ==========================================================
 
 st.subheader("🌌 AI Brand Reputation Galaxy")
 
 st.write(
-    "Each brand appears as a planet. "
-    "Size represents reputation strength. "
-    "Color indicates positive or negative sentiment."
+"Each brand appears as a planet. "
+"Size represents reputation strength. "
+"Color indicates sentiment."
 )
 
 galaxy_fig = generate_galaxy(filtered)
-
-st.dataframe(filtered)
 
 st.plotly_chart(galaxy_fig, use_container_width=True)
 
 
 # ==========================================================
-# ⭐ SMALL UPGRADE: 3D GALAXY VISUALIZATION
+# 🚨 AI ANOMALY DETECTION (CRISIS MONITOR)
 # ==========================================================
 
-st.subheader("🪐 3D Brand Galaxy View")
+st.subheader("🚨 Brand Crisis Detector")
 
-brands = filtered["brand"].unique()
-
-x = np.random.rand(len(brands))
-y = np.random.rand(len(brands))
-z = np.random.rand(len(brands))
-
-sizes = []
-
-for b in brands:
-    brand_data = filtered[filtered["brand"] == b]
-    vec = vectorizer.transform(brand_data["text"])
-    sentiments = sentiment_model.predict(vec)
-    score = reputation_score(sentiments)
-    sizes.append(score)
-
-fig3d = go.Figure(data=[go.Scatter3d(
-    x=x,
-    y=y,
-    z=z,
-    mode='markers+text',
-    text=brands,
-    marker=dict(
-        size=np.array(sizes)/2,
-        color=sizes,
-        colorscale='Viridis',
-        opacity=0.8
-    )
-)])
-
-fig3d.update_layout(title="3D Brand Reputation Galaxy")
-
-st.plotly_chart(fig3d, use_container_width=True)
-
-
-# ==========================================================
-# POWERFUL IMPROVEMENT: REAL-TIME BRAND MONITORING
-# ==========================================================
-
-st.subheader("📡 Live Brand Sentiment Monitor")
-
-placeholder = st.empty()
-
-live_data = filtered.sample(min(20, len(filtered)))
-
-live_counts = live_data["sentiment"].value_counts()
-
-live_fig = px.bar(
-    x=live_counts.index,
-    y=live_counts.values,
-    labels={"x": "Sentiment", "y": "Mentions"},
-    title="Live Sentiment Snapshot"
+negative_counts = filtered.groupby("brand")["sentiment"].apply(
+    lambda x: (x == "Negative").sum()
 )
 
-placeholder.plotly_chart(live_fig, use_container_width=True)
+threshold = negative_counts.mean() + negative_counts.std()
+
+alerts = negative_counts[negative_counts > threshold]
+
+if len(alerts) > 0:
+
+    st.error("⚠️ Potential Brand Crisis Detected!")
+
+    for brand, count in alerts.items():
+
+        st.write(f"🚨 {brand} showing unusual negative spike ({count})")
+
+else:
+
+    st.success("No brand crisis detected")
 
 
 # ==========================================================
