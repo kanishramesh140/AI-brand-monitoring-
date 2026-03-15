@@ -294,47 +294,43 @@ if st.button("Analyze"):
 
     sentiment = sentiment_model.predict(vec)[0]
 
-    if fake_model is not None:
-        fake = fake_model.predict(vec)[0]
-    else:
-        fake = 0
-        if (
-"!!!" in text or
-"100%" in text or
-"must buy" in text.lower() or
-"everyone must buy" in text.lower() or
-"best product ever" in text.lower() or
-"best phone ever" in text.lower() or
-"100% perfect" in text.lower() or
-"100% recommended" in text.lower() or
-"guaranteed results" in text.lower() or
-"life changing" in text.lower() or
-"amazing product" in text.lower() or
-"perfect product" in text.lower() or
-"top quality" in text.lower() or
-"highest quality" in text.lower() or
-"super product" in text.lower() or
-"awesome product" in text.lower() or
-"incredible product" in text.lower() or
-"fantastic product" in text.lower() or
-"buy this now" in text.lower() or
-"limited offer" in text.lower() or
-"don't miss this" in text.lower() or
-"highly recommend" in text.lower() or
-"highly recommended" in text.lower() or
-"worth every penny" in text.lower() or
-"totally worth it" in text.lower() or
-"best in the market" in text.lower() or
-"number one product" in text.lower() or
-"unbelievable" in text.lower() or
-"outstanding" in text.lower() or
-"no.1 brand" in text.lower() or
-"best ever" in text.lower() or
-"love this product" in text.lower() or
-"absolutely perfect" in text.lower() or
-"perfect in every way" in text.lower()
+   text_lower = text.lower()
+
+if (
+    "!!!" in text
+    or "100%" in text
+    or "must buy" in text_lower
+    or "everyone must buy" in text_lower
+    or "best product ever" in text_lower
+    or "best phone ever" in text_lower
+    or "100% recommended" in text_lower
+    or "guaranteed results" in text_lower
+    or "life changing" in text_lower
+    or "amazing product" in text_lower
+    or "perfect product" in text_lower
+    or "top quality" in text_lower
+    or "highest quality" in text_lower
+    or "super product" in text_lower
+    or "awesome product" in text_lower
+    or "incredible product" in text_lower
+    or "fantastic product" in text_lower
+    or "buy this now" in text_lower
+    or "limited offer" in text_lower
+    or "don't miss this" in text_lower
+    or "highly recommend" in text_lower
+    or "highly recommended" in text_lower
+    or "worth every penny" in text_lower
+    or "totally worth it" in text_lower
+    or "best in the market" in text_lower
+    or "number one product" in text_lower
+    or "unbelievable" in text_lower
+    or "outstanding" in text_lower
+    or "no.1 brand" in text_lower
+    or "best ever" in text_lower
+    or "love this product" in text_lower
+    or "absolutely perfect" in text_lower
+    or "perfect in every way" in text_lower
 ):
-            
     fake = 1
 elif fake_model is not None:
     fake = fake_model.predict(vec)[0]
